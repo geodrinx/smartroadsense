@@ -10,7 +10,9 @@
 name=smartroadsense
 qgisMinimumVersion=2.0
 description=smartroadsense
-version=0.2
+about=SmartRoadSense plugin for QuantumGIS 
+    .
+version=0.4
 author=geodrinx
 email=geodrinx@gmail.com
 

@@ -1,33 +1,35 @@
-Plugin Builder Results
+--------------------------------
+SmartRoadSense  plugin for QGIS
 
-Your plugin smartroadsense was created in:
-    C:\Users\rrr\.qgis2\python\plugins\smartroadsense
+   geodrinx@gmail.com
+--------------------------------
 
-Your QGIS plugin directory is located at:
-    C:/Users/rrr/.qgis2/python/plugins
+It downloads and displays CSV data of road surface conditions.
 
-What's Next:
+Based on  SmartRoadSense project and web site data:
 
-  * Copy the entire directory containing your new plugin to the QGIS plugin
-    directory
+  http://smartroadsense.it/
+  
+  http://smartroadsense.it/project.html
+  
+  http://smartroadsense.it/blog/it/
+  
 
-  * Compile the resources file using pyrcc4
+Keywords: Roughness; Accelerometer; Smartphone; Monitoring; Cloud
 
-  * Run the tests (``make test``)
-
-  * Test the plugin by enabling it in the QGIS plugin manager
-
-  * Customize it by editing the implementation file: ``smartroadsense.py``
-
-  * Create your own custom icon, replacing the default icon.png
-
-  * Modify your user interface by opening smartroadsense.ui in Qt Designer
-
-  * You can use the Makefile to compile your Ui and resource files when
-    you make changes. This requires GNU make (gmake)
-
-For more information, see the PyQGIS Developer Cookbook at:
-http://www.qgis.org/pyqgis-cookbook/index.html
-
-(C) 2011-2014 GeoApt LLC - geoapt.com
-Git revision : $Format:%H$
+Abstract:
+Monitoring of road surface conditions is a critical activity in transport 
+infrastructure management. Many research solutions have been proposed in order 
+to automatically control and check the quality of road surfaces. Most of them 
+make use of expensive sensors embedded in vehicles or mainly focus on detection 
+of specific anomalies during monitoring activity.In this paper, we describe the 
+design of a system for collaborative monitoring of road surface quality. The 
+overall architecture encompasses the integration of a custom mobile application, 
+a georeferenced database system and a visualization front-end. Road surface 
+condition is summarized through a roughness parameter computed using signal 
+processing algorithms running on mobile devices. The roughness values computed 
+are subsequently transmitted and stored into a back-end geographic information 
+system enabling processing of aggregated traces and visualization of road 
+conditions. The proposed approach introduces a thoroughly integrated system 
+suitable for monitoring applications in a scalable, crowdsourcing collaborative 
+setting.  

@@ -34,7 +34,11 @@ import qgis
 from PyQt4.QtCore import QFileInfo
 import zipfile 
 
+from qgis.gui import QgsMessageBar
 
+import time
+from PyQt4.QtGui import QProgressBar
+from PyQt4.QtCore import *
 
 class smartroadsense:
     """QGIS Plugin Implementation."""
@@ -186,16 +190,39 @@ class smartroadsense:
         del self.toolbar
 
 #  hhttp://smartroadsense.it/data/srs_data.zip
+#  hhttp://smartroadsense.it/open_data.zip
 
     def run(self):
     
             import urllib2    
     
-            stringa1 = "http://smartroadsense.it/data/srs_data.zip"
+            stringa1 = "http://smartroadsense.it/open_data.zip"
         
             mapCanvas = self.iface.mapCanvas()
 
-            tempDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()) + "python/plugins/smartroadsense/temp/"
+#--------------------------------
+            progressMessageBar = self.iface.messageBar().createMessage("SmartRoadSense: Loading remote CSV Open Data.  Please, wait...")
+            progress = QProgressBar()
+
+            progress.setMaximum(10)
+            progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+            progressMessageBar.layout().addWidget(progress)
+
+            self.iface.messageBar().pushWidget(progressMessageBar, self.iface.messageBar().INFO)
+            
+            for i in range(10):
+                  time.sleep(1)
+                  progress.setValue(i + 1)
+            self.iface.messageBar().clearWidgets()            
+#--------------------------------
+
+            msg = ("Loading remote csv open data.  Please, wait...")
+            self.iface.messageBar().pushMessage("SmartRoadSense:   ",
+                                                msg,
+                                                QgsMessageBar.INFO, 3)
+
+
+            tempDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()) + "/python/plugins/smartroadsense/temp/"
             
             stringaUrl = stringa1
  
@@ -210,8 +237,13 @@ class smartroadsense:
             except URLError, e:
                print "URL Error:",e.reason , url
 
-            
-            nomeZIP = tempDir + "srs_data.zip"
+
+
+            nomeZIP = tempDir + "open_data.zip"
+            nomeZIP.replace("\\", "/")
+            nomeZIP.replace("//", "/") 
+#            print ("%s\n") %(nomeZIP)
+                   
             f = open(nomeZIP, 'wb')				
             f.write(Zippo)
             f.close()
@@ -220,7 +252,7 @@ class smartroadsense:
             zip = zipfile.ZipFile(nomeZIP)  
             zip.extractall(tempDir)  
 
-            nomecsv = tempDir + "srs_data.csv"
+            nomecsv = tempDir + "open_data.csv"
             nomecsv.replace("\\", "/") 
             uri = """file:///""" + nomecsv + """?"""
             uri += """type=csv&"""
@@ -234,71 +266,22 @@ class smartroadsense:
             uri += """watchFile=no&"""
             uri += """crs=epsg:4326"""
 
-#file:///./srs_data.csv?type=csv&xField=LONGITUDE&yField=LATITUDE&spatialIndex=no&subsetIndex=no&watchFile=no
-
-#file:///./srs_data.csv?type=csv&trimFields=no&xField=LONGITUDE&yField=LATITUDE&spatialIndex=yes&subsetIndex=no&watchFile=no&crs=epsg:4326
-   
-#file:///./srs_data.csv?type=csv&trimFields=Yes&xField=LONGITUDE&yField=LATITUDE&spatialIndex=yes&subsetIndex=no&watchFile=no&crs=epsg:4326
-           
-#file:///./srs_data.csv?type=csv&delimiter=,&trimFields=Yes&xField=LONGITUDE&yField=LATITUDE&spatialIndex=yes&subsetIndex=no&watchFile=no&crs=epsg:4326
                        
-            vlayer = QgsVectorLayer(uri, "srs_data", "delimitedtext")
+            vlayer = QgsVectorLayer(uri, "SmartRoadSense", "delimitedtext")
 
 
             for iLayer in range(mapCanvas.layerCount()):
                layer = mapCanvas.layer(iLayer)
-               if layer.name() == "srs_data":
+               if layer.name() == "SmartRoadSense":
                   QgsMapLayerRegistry.instance().removeMapLayer(layer.id())                  
 
         
             QgsMapLayerRegistry.instance().addMapLayer(vlayer)   
 
-#GRADUATED: attr PPE
-#0.000119 - 0.076728:: 0.000 - 0.077 ::MARKER SYMBOL (1 layers) color 153,213,148,255
-#0.076728 - 0.191764:: 0.077 - 0.192 ::MARKER SYMBOL (1 layers) color 255,255,191,255
-#0.191764 - 18.7402:: 0.192 - 18.740 ::MARKER SYMBOL (1 layers) color 252,141,89,255
 
-
-#  Codice Javascript da SmartRoadSense  ------------------------------
-#
-#            avgPPE =  valore del campo PPE
-#
-#            COLOR_FIRST_STEP = 0.6
-#            COLOR_SECOND_STEP = 2
-#
-#            COLOR_THIRD_STEP = 4
-#
-#            green = 0, red = 0, blue = 0
-#
-#            var light = 255
-#            if (avgPPE <= COLOR_FIRST_STEP):
-#                green = 1
-#                red = 1 / COLOR_FIRST_STEP * avgPPE
-#                light = 127 + 128 * (1 / COLOR_FIRST_STEP) * avgPPE
-#            else: if (avgPPE > COLOR_FIRST_STEP && avgPPE < COLOR_SECOND_STEP):
-#                pitch = COLOR_SECOND_STEP - COLOR_FIRST_STEP
-#                red = 1
-#                green = - 1 / pitch * avgPPE + COLOR_SECOND_STEP/pitch
-#            else: if (avgPPE < COLOR_THIRD_STEP):
-#                var pitch = COLOR_THIRD_STEP - COLOR_SECOND_STEP
-#                red = 1
-#                blue = math.min(1, (avgPPE - pitch) / pitch)
-#            else:
-#                red = green = blue = 0;
-#            # }
-#
-#            red = math.floor(red * 255)
-#            green = math.floor(green * light)
-#            blue = math.floor(blue * 255)
-#
-#  Fine codice Javascript-------------------------------------------
-
-
-#            nomeqml = "file:///" + tempDir + "srs_data.qml"
-            nomeqml = tempDir + "srs_data.qml"            
+            nomeqml = tempDir + "open_data.qml"            
             nomeqml.replace("\\", "/")
 
-#            print("<%s>\n") %(nomeqml)
 
             result = vlayer.loadNamedStyle(nomeqml)            
 #            if (result == False ):
